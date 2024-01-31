@@ -173,7 +173,7 @@ class MainWindow(qtw.QWidget):
 			if len(amp) > 0:
 				if MAC in self.CSI_DATA:
 					self.CSI_DATA[MAC]["amplitudes"].append(amp)
-					self.CSI_DATA[MAC]["frequency"] = len(self.CSI_DATA[MAC]["amplitudes"]) / diff
+					# self.CSI_DATA[MAC]["frequency"] = len(self.CSI_DATA[MAC]["amplitudes"]) / diff
 				else:
 					self.CSI_DATA[MAC] = {"amplitudes": [amp], "frequency": 0}
 					
