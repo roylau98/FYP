@@ -2,23 +2,25 @@ from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
 from PyQt5 import QtGui as qtg
 
-from importFileWidget import importFile
-from filterWidget import filterWidget
-from mplWidget import Mpl
-from worker import Worker
-from utils import process, CSVparser
+from userInterface.importFileWidget import importFile
+from userInterface.filterWidget import filterWidget
+from userInterface.logWidget import logWidget
+from userInterface.mplWidget import Mpl
+from utilities.worker import Worker
+from utilities.utils import process, CSVparser, butter_lowpass_filter
 
 import pandas as pd
-import re
 from datetime import datetime
 
 live = False
+startTime = None
 
 class MainWindow(qtw.QWidget):
 	def __init__(self):
 		super(MainWindow, self).__init__()
 		self.setWindowTitle("ESP32 CSI Visualiser")
-		self.setWindowIcon(qtg.QIcon('audio-waves.png'))
+		self.setWindowIcon(qtg.QIcon('resources/audio-waves.png'))
+
 		self.dataframe = None
 		self.macAddresses = None
 		self.CSI_DATA = {}
@@ -35,9 +37,13 @@ class MainWindow(qtw.QWidget):
 		self.rightgrid = qtw.QGridLayout(self)
 		self.leftgrid = qtw.QGridLayout(self)
 
+		self.logWidget = logWidget()
+		self.rightgrid.addWidget(self.logWidget)
+
 		self.importFileWidget = importFile()
 		self.importFileWidget.file.textChanged.connect(
 			lambda: self.CSVparserwrapper(self.importFileWidget.getCSVFileName()))
+		self.importFileWidget.setMaximumHeight(80)
 		self.rightgrid.addWidget(self.importFileWidget)
 
 		self.addGraph_button = qtw.QPushButton('Add Graph', self)
@@ -58,6 +64,10 @@ class MainWindow(qtw.QWidget):
 		app.aboutToQuit.connect(self.closeEvent)
 
 		if live:
+			self.logWidget.insertLog("Starting ESP32 CSI Visualiser in live plotting mode")
+			global startTime
+			startTime = datetime.now()
+
 			self.read_thread = qtc.QThread()
 			self.worker = Worker()
 			self.worker.moveToThread(self.read_thread)
@@ -77,6 +87,7 @@ class MainWindow(qtw.QWidget):
 		if len(self.filterWidgets) < 4:
 			print("Added graph")
 			newfilterWidget = filterWidget(len(self.filterWidgets) + 1)
+			newfilterWidget.setMaximumHeight(140)
 
 			# set the object name as the index, it will be a one to one mapping with the plot
 			newfilterWidget.setObjectName(str(len(self.filterWidgets)))
@@ -84,11 +95,19 @@ class MainWindow(qtw.QWidget):
 			if not live:
 				# need to use lambdas to send arguments
 				plotLambda = lambda: self.plotter(newfilterWidget)
-				newfilterWidget.mac_address.currentTextChanged.connect(plotLambda)
-				newfilterWidget.subcarrier.currentTextChanged.connect(plotLambda)
+				#newfilterWidget.mac_address.currentTextChanged.connect(plotLambda)
+				#newfilterWidget.subcarrier.currentTextChanged.connect(plotLambda)
+
+				newfilterWidget.filterButton.clicked.connect(plotLambda)
+			else:
+				newfilterWidget.cutoffFrequency.setReadOnly(True)
+				newfilterWidget.cutoffFrequency.insertPlainText("-")
 
 			self.rightgrid.addWidget(newfilterWidget)
 			self.filterWidgets.append(newfilterWidget)
+
+			if len(self.filterWidgets) > 1:
+				self.logWidget.insertLog(f"Added Graph {len(self.filterWidgets)}")
 
 			newMpl_canvas = Mpl(len(self.mplCanvas) + 1)
 			self.mplCanvas.append(newMpl_canvas)
@@ -109,17 +128,23 @@ class MainWindow(qtw.QWidget):
 			self.filterWidgets[-1].deleteLater()
 			self.filterWidgets[-1] = None
 
+			self.logWidget.insertLog(f"Removed Graph {len(self.filterWidgets)}")
+
 			self.mplCanvas.pop()
 			self.filterWidgets.pop()
+
 
 	def live_plotting(self):
 		for idx in range(len(self.filterWidgets)):
 			filterWidgetObject = self.filterWidgets[idx]
-			MAC, subcarrier, index = filterWidgetObject.getAttributes()
-		
+			MAC, subcarrier, index, _ = filterWidgetObject.getAttributes()
+			
 			try:
+				diff = (datetime.now() - startTime).total_seconds()
+				self.CSI_DATA[MAC]["frequency"] = len(self.CSI_DATA[MAC]["amplitudes"]) / diff
+				self.filterWidgets[idx].setSamplingFreq(self.CSI_DATA[MAC]["frequency"])
 				# list of list of CSI data
-				csi = self.CSI_DATA[MAC]
+				csi = self.CSI_DATA[MAC]["amplitudes"]
 				#get the last 100 lists
 				csi = csi[-100:]
 				
@@ -142,15 +167,16 @@ class MainWindow(qtw.QWidget):
 			result[18] = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
 			self.live_data.append(result)
 			amp = process(result[25])
-			print(amp)
+			
 			MAC = result[2]
 				
 			if len(amp) > 0:
 				if MAC in self.CSI_DATA:
-					self.CSI_DATA[MAC].append(amp)
+					self.CSI_DATA[MAC]["amplitudes"].append(amp)
+					self.CSI_DATA[MAC]["frequency"] = len(self.CSI_DATA[MAC]["amplitudes"]) / diff
 				else:
-					self.CSI_DATA[MAC] = []
-					self.CSI_DATA[MAC].append(amp)
+					self.CSI_DATA[MAC] = {"amplitudes": [amp], "frequency": 0}
+					
 					for filterWidget in self.filterWidgets:
 						filterWidget.addToComboBox([MAC])
 						
@@ -165,6 +191,7 @@ class MainWindow(qtw.QWidget):
 				
 
 	def CSVparserwrapper(self, CSVFile):
+		self.logWidget.insertLog(f"Importing File: {CSVFile} into ESP32 CSI Visualiser.")
 		self.CSI_DATA, self.macAddresses = CSVparser(CSVFile)
 
 		for i in self.filterWidgets:
@@ -172,12 +199,37 @@ class MainWindow(qtw.QWidget):
 
 	def plotter(self, filterWidgetObject):
 		if live == False:
-			MAC, subcarrier, index = filterWidgetObject.getAttributes()
+			try:
+				MAC, subcarrier, index, cutoffFreq = filterWidgetObject.getAttributes()
+				samplingFreq = self.CSI_DATA[MAC]["frequency"]
+				self.filterWidgets[int(index)].setSamplingFreq(samplingFreq)
+				self.logWidget.insertLog(f"Plotting CSI of {MAC}, subcarrier {int(subcarrier)}, sampling frequency "
+										 f"{str(samplingFreq)}, cutoff frequency {str(cutoffFreq)} "
+										 f"on Graph {str(int(index) + 1)}.")
 
-			amplitudes = self.CSI_DATA[MAC]
-			Y = [x[subcarrier] for x in amplitudes if len(x) > subcarrier]
-			X = [i + 1 for i in range(len(Y))]
-			self.mplCanvas[int(index)].plot(X, Y, f"Amplitude plot of subcarrier {subcarrier}")
+				if cutoffFreq == "":
+					msg = qtw.QErrorMessage()
+					msg.showMessage("Filters are not set properly")
+					msg.exec_()
+					return
+
+				amplitudes = self.CSI_DATA[MAC]["amplitudes"]
+				Y = [x[subcarrier] for x in amplitudes if len(x) > subcarrier]
+				Y = butter_lowpass_filter(Y, cutoffFreq, samplingFreq)
+				X = [i + 1 for i in range(len(Y))]
+				self.mplCanvas[int(index)].plot(X, Y, f"Amplitude plot of subcarrier {subcarrier}")
+			except ValueError:
+				self.logWidget.insertLog(f"Error occurred: Please import a file first or set the filters correctly.")
+				return
+			except Exception as e:
+				MAC, subcarrier, index, cutoffFreq = filterWidgetObject.getAttributes()
+				samplingFreq = self.CSI_DATA[MAC]["frequency"]
+				self.logWidget.insertLog(f"Plotting CSI of {MAC}, subcarrier {int(subcarrier)}, sampling frequency "
+										 f"{str(samplingFreq)}, cutoff frequency {str(cutoffFreq)} "
+										 f"on Graph {str(int(index) + 1)}.")
+				msg = qtw.QErrorMessage()
+				msg.showMessage(f"An error occured applying the filter due to: \n{e}.")
+				msg.exec_()
 
 	def closeEvent(self, event):
 		global live
@@ -189,11 +241,11 @@ class MainWindow(qtw.QWidget):
 			self.dataframe = pd.DataFrame(self.live_data, columns=self.columns)
 			print(self.dataframe)
 			self.dataframe.to_csv(dt_now, sep=",", index=False)
-		try:
-			self.worker.stop()
-		except:
-			pass
-
+			try:
+				self.worker.stop()
+			except:
+				pass
+		self.logWidget.insertLog("Exiting ESP32 CSI Visualiser")
 		import sys
 		sys.exit(0)
 
