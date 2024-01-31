@@ -21,5 +21,6 @@ class Mpl(qtw.QGroupBox):
     def plot(self, X, Y, label):
         self.ax.cla()
         self.ax.plot(tuple(X), tuple(Y), label=label)
-
+        self.ax.set_xlabel("Number of packets")
+        self.ax.set_ylabel("CSI Amplitude")
         self.canvas.draw()
