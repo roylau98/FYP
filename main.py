@@ -145,8 +145,8 @@ class MainWindow(qtw.QWidget):
 				self.filterWidgets[idx].setSamplingFreq(self.CSI_DATA[MAC]["frequency"])
 				# list of list of CSI data
 				csi = self.CSI_DATA[MAC]["amplitudes"]
-				#get the last 100 lists
-				csi = csi[-100:]
+				#get the last 300 lists to plot
+				csi = csi[-300:]
 				
 				Y = [x[subcarrier] for x in csi if len(x) > subcarrier]
 				X = [i+1 for i in range(len(Y))]
@@ -200,33 +200,26 @@ class MainWindow(qtw.QWidget):
 	def plotter(self, filterWidgetObject):
 		if live == False:
 			try:
+				# if cutoff freq is none just plot normally
 				MAC, subcarrier, index, cutoffFreq = filterWidgetObject.getAttributes()
 				samplingFreq = self.CSI_DATA[MAC]["frequency"]
 				self.filterWidgets[int(index)].setSamplingFreq(samplingFreq)
-				self.logWidget.insertLog(f"Plotting CSI of {MAC}, subcarrier {int(subcarrier)}, sampling frequency "
-										 f"{str(samplingFreq)}, cutoff frequency {str(cutoffFreq)} "
-										 f"on Graph {str(int(index) + 1)}.")
-
-				if cutoffFreq == "":
-					msg = qtw.QErrorMessage()
-					msg.showMessage("Filters are not set properly")
-					msg.exec_()
-					return
+				self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC - {MAC}, subcarrier - {int(subcarrier)},"
+										 f"sampling frequency - {str(samplingFreq)}, "
+										 f"cutoff frequency {str(cutoffFreq)}.")
 
 				amplitudes = self.CSI_DATA[MAC]["amplitudes"]
 				Y = [x[subcarrier] for x in amplitudes if len(x) > subcarrier]
-				Y = butter_lowpass_filter(Y, cutoffFreq, samplingFreq)
+
+				if cutoffFreq:
+					Y = butter_lowpass_filter(Y, cutoffFreq, samplingFreq)
+
 				X = [i + 1 for i in range(len(Y))]
 				self.mplCanvas[int(index)].plot(X, Y, f"Amplitude plot of subcarrier {subcarrier}")
 			except ValueError:
 				self.logWidget.insertLog(f"Error occurred: Please import a file first or set the filters correctly.")
 				return
 			except Exception as e:
-				MAC, subcarrier, index, cutoffFreq = filterWidgetObject.getAttributes()
-				samplingFreq = self.CSI_DATA[MAC]["frequency"]
-				self.logWidget.insertLog(f"Plotting CSI of {MAC}, subcarrier {int(subcarrier)}, sampling frequency "
-										 f"{str(samplingFreq)}, cutoff frequency {str(cutoffFreq)} "
-										 f"on Graph {str(int(index) + 1)}.")
 				msg = qtw.QErrorMessage()
 				msg.showMessage(f"An error occured applying the filter due to: \n{e}.")
 				msg.exec_()

@@ -66,7 +66,8 @@ class filterWidget(qtw.QGroupBox):
         try:
             return str(self.mac_address.currentText()), int(self.subcarrier.currentText()), self.objectName(), float(self.cutoffFrequency.toPlainText())
         except:
-            return str(self.mac_address.currentText()), int(self.subcarrier.currentText()), self.objectName(), (self.cutoffFrequency.toPlainText())
+            # if cutoffFreq is not valid (empty value), dont apply butterworth filter
+            return str(self.mac_address.currentText()), int(self.subcarrier.currentText()), self.objectName(), None
 
     def setSamplingFreq(self, samplingFreq):
         self.samplingFrequency.clear()
