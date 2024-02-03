@@ -6,7 +6,7 @@ from userInterface.importFileWidget import importFile
 from userInterface.filterWidget import filterWidget
 from userInterface.logWidget import logWidget
 from userInterface.mplWidget import Mpl
-from utilities.worker import Worker
+from utilities.reader import Reader
 from utilities.utils import process, CSVparser, butter_lowpass_filter
 
 import pandas as pd
@@ -69,12 +69,12 @@ class MainWindow(qtw.QWidget):
 			startTime = datetime.now()
 
 			self.read_thread = qtc.QThread()
-			self.worker = Worker()
-			self.worker.moveToThread(self.read_thread)
-			self.read_thread.started.connect(self.worker.run)
-			self.worker.finished.connect(self.read_thread.quit)
-			self.worker.finished.connect(self.worker.deleteLater)
-			self.worker.progress.connect(self.reportProgress)
+			self.reader = Reader()
+			self.reader.moveToThread(self.read_thread)
+			self.read_thread.started.connect(self.reader.run)
+			self.reader.finished.connect(self.read_thread.quit)
+			self.reader.finished.connect(self.reader.deleteLater)
+			self.reader.progress.connect(self.reportProgress)
 			# Step 6: Start the thread
 			self.read_thread.start()
 			
@@ -238,7 +238,7 @@ class MainWindow(qtw.QWidget):
 			print(self.dataframe)
 			self.dataframe.to_csv(dt_now, sep=",", index=False)
 			try:
-				self.worker.stop()
+				self.reader.stop()
 			except:
 				pass
 		self.logWidget.insertLog("Exiting ESP32 CSI Visualiser")
