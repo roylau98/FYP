@@ -99,9 +99,6 @@ class MainWindow(qtw.QWidget):
 				#newfilterWidget.subcarrier.currentTextChanged.connect(plotLambda)
 
 				newfilterWidget.filterButton.clicked.connect(plotLambda)
-			else:
-				newfilterWidget.cutoffFrequency.setReadOnly(True)
-				newfilterWidget.cutoffFrequency.insertPlainText("-")
 
 			self.rightgrid.addWidget(newfilterWidget)
 			self.filterWidgets.append(newfilterWidget)
@@ -138,6 +135,8 @@ class MainWindow(qtw.QWidget):
 		for idx in range(len(self.filterWidgets)):
 			filterWidgetObject = self.filterWidgets[idx]
 			MAC, subcarrier, index, cutoffFreq = filterWidgetObject.getAttributes()
+			if MAC == "":
+				return
 			diff = (datetime.now() - startTime).total_seconds()
 
 			self.CSI_DATA[MAC]["frequency"] = len(self.CSI_DATA[MAC]["amplitudes"]) / diff
@@ -145,8 +144,8 @@ class MainWindow(qtw.QWidget):
 			samplingFreq = self.CSI_DATA[MAC]["frequency"]
 			# list of list of CSI data
 			csi = self.CSI_DATA[MAC]["amplitudes"]
-			# get the last 300 lists to plot
-			csi = csi[-300:]
+			# get the last 200 lists to plot
+			csi = csi[-200:]
 
 			Y = [x[subcarrier] for x in csi if len(x) > subcarrier]
 
