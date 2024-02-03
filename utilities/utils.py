@@ -65,9 +65,7 @@ def CSVparser(CSVFile):
 def butter_lowpass(cutoffFrequency, samplingFrequency, order=2):
     try:
         nyquist = 1/(2*samplingFrequency)
-        #normal_cutoff = cutoffFrequency / (samplingFrequency / 2)
         normal_cutoff = cutoffFrequency / nyquist
-        print(nyquist, normal_cutoff)
         b, a = butter(order, normal_cutoff, btype='lowpass', analog=False)
         return b, a
     except Exception as e:

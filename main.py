@@ -99,9 +99,6 @@ class MainWindow(qtw.QWidget):
 				#newfilterWidget.subcarrier.currentTextChanged.connect(plotLambda)
 
 				newfilterWidget.filterButton.clicked.connect(plotLambda)
-			else:
-				newfilterWidget.cutoffFrequency.setReadOnly(True)
-				newfilterWidget.cutoffFrequency.insertPlainText("-")
 
 			self.rightgrid.addWidget(newfilterWidget)
 			self.filterWidgets.append(newfilterWidget)
@@ -137,23 +134,29 @@ class MainWindow(qtw.QWidget):
 	def live_plotting(self):
 		for idx in range(len(self.filterWidgets)):
 			filterWidgetObject = self.filterWidgets[idx]
-			MAC, subcarrier, index, _ = filterWidgetObject.getAttributes()
-			
-			try:
-				diff = (datetime.now() - startTime).total_seconds()
-				self.CSI_DATA[MAC]["frequency"] = len(self.CSI_DATA[MAC]["amplitudes"]) / diff
-				self.filterWidgets[idx].setSamplingFreq(self.CSI_DATA[MAC]["frequency"])
-				# list of list of CSI data
-				csi = self.CSI_DATA[MAC]["amplitudes"]
-				#get the last 300 lists to plot
-				csi = csi[-300:]
-				
-				Y = [x[subcarrier] for x in csi if len(x) > subcarrier]
-				X = [i+1 for i in range(len(Y))]
-				
-				self.mplCanvas[idx].plot(X, Y, f"Amplitude plot of subcarrier {subcarrier}")
-			except:
+			MAC, subcarrier, index, cutoffFreq = filterWidgetObject.getAttributes()
+			if MAC == "":
 				return
+			diff = (datetime.now() - startTime).total_seconds()
+
+			self.CSI_DATA[MAC]["frequency"] = len(self.CSI_DATA[MAC]["amplitudes"]) / diff
+			self.filterWidgets[idx].setSamplingFreq(self.CSI_DATA[MAC]["frequency"])
+			samplingFreq = self.CSI_DATA[MAC]["frequency"]
+			# list of list of CSI data
+			csi = self.CSI_DATA[MAC]["amplitudes"]
+			# get the last 200 lists to plot
+			csi = csi[-200:]
+
+			Y = [x[subcarrier] for x in csi if len(x) > subcarrier]
+
+			try:
+				if cutoffFreq:
+					Y = butter_lowpass_filter(Y, cutoffFreq, samplingFreq)
+			except:
+				pass
+			X = [i + 1 for i in range(len(Y))]
+
+			self.mplCanvas[idx].plot(X, Y, f"Amplitude plot of subcarrier {subcarrier}")
 		
 
 	def reportProgress(self, result):
@@ -205,7 +208,7 @@ class MainWindow(qtw.QWidget):
 				samplingFreq = self.CSI_DATA[MAC]["frequency"]
 				self.filterWidgets[int(index)].setSamplingFreq(samplingFreq)
 				self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC - {MAC}, subcarrier - {int(subcarrier)},"
-										 f"sampling frequency - {str(samplingFreq)}, "
+										 f"sampling frequency - {str(round(samplingFreq, 2))} (Hz), "
 										 f"cutoff frequency {str(cutoffFreq)}.")
 
 				amplitudes = self.CSI_DATA[MAC]["amplitudes"]
