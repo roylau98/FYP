@@ -35,7 +35,7 @@ class importFile(qtw.QGroupBox):
 
         if filename:
             path = Path(filename)
-            self.file.setText(str(path))
+            self.file.setText(str(path).split("\\")[-1])
 
     def getCSVFileName(self):
         return self.file.toPlainText()

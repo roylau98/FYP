@@ -208,7 +208,7 @@ class MainWindow(qtw.QWidget):
 				samplingFreq = self.CSI_DATA[MAC]["frequency"]
 				self.filterWidgets[int(index)].setSamplingFreq(samplingFreq)
 				self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC - {MAC}, subcarrier - {int(subcarrier)},"
-										 f"sampling frequency - {str(samplingFreq)}, "
+										 f"sampling frequency - {str(round(samplingFreq, 2))} (Hz), "
 										 f"cutoff frequency {str(cutoffFreq)}.")
 
 				amplitudes = self.CSI_DATA[MAC]["amplitudes"]
