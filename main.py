@@ -137,23 +137,27 @@ class MainWindow(qtw.QWidget):
 	def live_plotting(self):
 		for idx in range(len(self.filterWidgets)):
 			filterWidgetObject = self.filterWidgets[idx]
-			MAC, subcarrier, index, _ = filterWidgetObject.getAttributes()
-			
+			MAC, subcarrier, index, cutoffFreq = filterWidgetObject.getAttributes()
+			diff = (datetime.now() - startTime).total_seconds()
+
+			self.CSI_DATA[MAC]["frequency"] = len(self.CSI_DATA[MAC]["amplitudes"]) / diff
+			self.filterWidgets[idx].setSamplingFreq(self.CSI_DATA[MAC]["frequency"])
+			samplingFreq = self.CSI_DATA[MAC]["frequency"]
+			# list of list of CSI data
+			csi = self.CSI_DATA[MAC]["amplitudes"]
+			# get the last 300 lists to plot
+			csi = csi[-300:]
+
+			Y = [x[subcarrier] for x in csi if len(x) > subcarrier]
+
 			try:
-				diff = (datetime.now() - startTime).total_seconds()
-				self.CSI_DATA[MAC]["frequency"] = len(self.CSI_DATA[MAC]["amplitudes"]) / diff
-				self.filterWidgets[idx].setSamplingFreq(self.CSI_DATA[MAC]["frequency"])
-				# list of list of CSI data
-				csi = self.CSI_DATA[MAC]["amplitudes"]
-				#get the last 300 lists to plot
-				csi = csi[-300:]
-				
-				Y = [x[subcarrier] for x in csi if len(x) > subcarrier]
-				X = [i+1 for i in range(len(Y))]
-				
-				self.mplCanvas[idx].plot(X, Y, f"Amplitude plot of subcarrier {subcarrier}")
+				if cutoffFreq:
+					Y = butter_lowpass_filter(Y, cutoffFreq, samplingFreq)
 			except:
-				return
+				pass
+			X = [i + 1 for i in range(len(Y))]
+
+			self.mplCanvas[idx].plot(X, Y, f"Amplitude plot of subcarrier {subcarrier}")
 		
 
 	def reportProgress(self, result):
