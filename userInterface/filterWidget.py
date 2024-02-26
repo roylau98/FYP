@@ -24,7 +24,7 @@ class filterWidget(qtw.QGroupBox):
         self.samplingFrequency = qtw.QTextEdit()
         self.samplingFrequency.setFixedWidth(200)
         self.samplingFrequency_label = qtw.QLabel("Sampling\nFrequency (Hz): ")
-        self.samplingFrequency.setReadOnly(True)
+        #self.samplingFrequency.setReadOnly(True)
 
         self.filterButton = qtw.QPushButton("Apply filter")
 
@@ -61,6 +61,15 @@ class filterWidget(qtw.QGroupBox):
 
     def getcutoffFrequency(self):
         return float(self.cutoffFrequency.toPlainText())
+
+    def getSamplingFreq(self):
+        try:
+            if "Hz" in self.samplingFrequency.toPlainText():
+                return int(self.samplingFrequency.toPlainText().split(" ")[0])
+
+            return int(self.samplingFrequency.toPlainText())
+        except:
+            return 0
 
     def getAttributes(self):
         try:

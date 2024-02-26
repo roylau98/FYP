@@ -8,9 +8,11 @@ from userInterface.logWidget import logWidget
 from userInterface.mplWidget import Mpl
 from utilities.reader import Reader
 from utilities.utils import process, CSVparser, butter_lowpass_filter
+from utilities.dataProcessor import DataProcessor
 
 import pandas as pd
 from datetime import datetime
+import queue
 
 live = False
 startTime = None
@@ -82,6 +84,25 @@ class MainWindow(qtw.QWidget):
 			self.live_plottingtimer.timeout.connect(self.live_plotting)
 			self.live_plottingtimer.setInterval(1000)
 			self.live_plottingtimer.start()
+
+	# def startThreads(self):
+	# 	self.data_queue = queue.Queue()  # Thread-safe queue for streaming data
+	# 	self.worker = WorkerThread(self.data_queue)
+	# 	self.data_processor = DataProcessor(self.data_queue)
+	#
+	# 	# Connect the signals and start the threads
+	# 	# self.worker_thread.data_signal.connect(self.update_label)
+	# 	self.worker_thread = qtc.QThread()
+	# 	self.worker.moveToThread(self.worker_thread)
+	# 	self.worker_thread.stop_signal.connect(self.stop_data_processor)
+	# 	self.worker_thread.start()
+	#
+	# 	# Start the data processor
+	# 	self.data_processor.result_signal.connect(self.reportProgress)
+	# 	self.data_processor_thread = qtc.QThread()
+	# 	self.data_processor.moveToThread(self.data_processor_thread)
+	# 	self.data_processor_thread.started.connect(self.data_processor.process_data)
+	# 	self.data_processor_thread.start()
 
 	def addGraph(self):
 		if len(self.filterWidgets) < 4:
@@ -205,7 +226,8 @@ class MainWindow(qtw.QWidget):
 			try:
 				# if cutoff freq is none just plot normally
 				MAC, subcarrier, index, cutoffFreq = filterWidgetObject.getAttributes()
-				samplingFreq = self.CSI_DATA[MAC]["frequency"]
+				#samplingFreq = self.CSI_DATA[MAC]["frequency"]
+				samplingFreq = filterWidgetObject.getSamplingFreq()
 				self.filterWidgets[int(index)].setSamplingFreq(samplingFreq)
 				self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC - {MAC}, subcarrier - {int(subcarrier)},"
 										 f"sampling frequency - {str(round(samplingFreq, 2))} (Hz), "

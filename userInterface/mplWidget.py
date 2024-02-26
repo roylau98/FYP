@@ -10,7 +10,7 @@ class Mpl(qtw.QGroupBox):
         self.initUI()
 
     def initUI(self):
-        fig = Figure(figsize=(5, 5))
+        fig = Figure(figsize=(10, 6))
         self.canvas = FigureCanvasQTAgg(fig)
         self.toolbar = NavigationToolbar2QT(self.canvas, self)
         layout = qtw.QVBoxLayout(self)

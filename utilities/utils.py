@@ -23,12 +23,14 @@ def process(csi_data):
 
         csi_size = len(csi_data)
         amplitudes = []
+        phases = []
         if len(imaginary) > 0 and len(real) > 0:
             for j in range(int(csi_size / 2)):
                 amplitude_calc = math.sqrt(imaginary[j] ** 2 + real[j] ** 2)
                 amplitudes.append(amplitude_calc)
+                phases.append(math.atan2(imaginary[j], real[j]))
 
-        return amplitudes
+        return amplitudes, phases
     except:
         return []
 
@@ -50,13 +52,16 @@ def CSVparser(CSVFile):
             if len(amp) > 0:
                 amplitudes.append(amp)
 
-        startTime = filtered_df["local_timestamp"].iloc[0]
-        startTime = datetime.strptime(startTime, "%d/%m/%Y_%H:%M:%S")
-        endTime = filtered_df["local_timestamp"].iloc[-1]
-        endTime = datetime.strptime(endTime, "%d/%m/%Y_%H:%M:%S")
-        difference = (endTime - startTime).total_seconds()
-        frequency = len(amplitudes) / difference
-        print(frequency)
+        try:
+            startTime = filtered_df["local_timestamp"].iloc[0]
+            startTime = datetime.strptime(startTime, "%d/%m/%Y_%H:%M:%S")
+            endTime = filtered_df["local_timestamp"].iloc[-1]
+            endTime = datetime.strptime(endTime, "%d/%m/%Y_%H:%M:%S")
+            difference = (endTime - startTime).total_seconds()
+            frequency = len(amplitudes) / difference
+            print(frequency)
+        except:
+            frequency = 0
 
         CSI_amplitudes[mac] = {"amplitudes": amplitudes, "frequency": frequency}
     return CSI_amplitudes, macAddresses

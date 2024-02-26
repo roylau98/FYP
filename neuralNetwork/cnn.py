@@ -123,8 +123,8 @@ def main():
     model = CNN1D(number_of_categories)
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    if (os.path.isfile("model.pth")):
-        model.load_state_dict(torch.load('model.pth'))
+    if (os.path.isfile("model_24012024_2connv1d.pth")):
+        model.load_state_dict(torch.load('model_24012024_2connv1d.pth'))
     else:
         train_and_eval(model, X_train, y_train, X_val, y_val, 100, 32, optimizer, loss_fn)
 
