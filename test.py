@@ -1,4 +1,5 @@
 import sys
+from PyQt5 import QtCore as qtc
 from PyQt5.QtCore import QThread, pyqtSignal, QObject
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QPushButton, QLabel, QWidget
 from queue import Queue
@@ -29,18 +30,14 @@ class WorkerThread(QThread):
         self.data_queue = data_queue
 
     def run(self):
-        for i in range(5):
-            data = f"Data from thread: {i}"
-            self.data_signal.emit(data)
-
-            # Put data into the queue
-            self.data_queue.put(data)
-
-            # Simulate additional actions
-            self.msleep(1000)
-
-        # Signal that the worker thread has finished producing data
-        self.stop_signal.emit()
+        while True:
+            try:
+                sys.stdin.buffer.flush()
+                output = sys.stdin.buffer.readline().decode('utf-8').replace("\n", "").replace("\r", "")
+                if "CSI_DATA" in output:
+                    self.data_signal.emit(output)
+            except:
+                pass
 
 class MainWindow(QMainWindow):
     def __init__(self):

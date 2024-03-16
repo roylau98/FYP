@@ -4,7 +4,7 @@ from PyQt5 import QtCore as qtc
 class logWidget(qtw.QGroupBox):
     def __init__(self):
         super(logWidget, self).__init__()
-        self.setTitle("Output Text")
+        self.setTitle("Logs")
         self.initUI()
 
     def initUI(self):

@@ -6,6 +6,7 @@ import os
 class importFile(qtw.QGroupBox):
     def __init__(self):
         super(importFile, self).__init__()
+        self.filePath = None
         self.setTitle(f"Import File")
         self.initUI()
 
@@ -35,7 +36,11 @@ class importFile(qtw.QGroupBox):
 
         if filename:
             path = Path(filename)
+            self.filePath = path
             self.file.setText(str(path).split("\\")[-1])
 
     def getCSVFileName(self):
         return self.file.toPlainText()
+
+    def getCSVFilePath(self):
+        return self.filePath
