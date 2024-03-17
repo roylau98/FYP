@@ -9,7 +9,7 @@ from userInterface.logWidget import logWidget
 from userInterface.mplWidget import Mpl
 from utilities.reader import Reader
 from utilities.utils import process, CSVparser, butter_lowpass_filter, hampel_filter, dwt_filter
-from utilities.classes import Graphtype, CSItype, Filters
+from utilities.classes import Graphtype, CSItype, Filters, Xaxis
 from utilities.CSI import CSIDATA
 from utilities.dataProcessor import DataProcessor
 from sklearn.decomposition import PCA
@@ -40,29 +40,34 @@ class MainWindow(qtw.QWidget):
 		self.grid_layout = qtw.QGridLayout(self)
 		self.rightgrid = qtw.QGridLayout(self)
 		self.leftgrid = qtw.QGridLayout(self)
+		self.buttongrid = qtw.QGridLayout(self)
 
 		self.logWidget = logWidget()
-		self.rightgrid.addWidget(self.logWidget)
+		self.rightgrid.addWidget(self.logWidget, 0, 0)
 
 		self.importFileWidget = importFile()
 		self.importFileWidget.file.textChanged.connect(
 			lambda: self.CSVparserwrapper(self.importFileWidget.getCSVFilePath()))
 		self.importFileWidget.setMaximumHeight(80)
-		self.rightgrid.addWidget(self.importFileWidget)
+		self.rightgrid.addWidget(self.importFileWidget, 1, 0)
 
 		self.addGraph_button = qtw.QPushButton('Add Graph', self)
 		self.removeGraph_button = qtw.QPushButton('Remove Graph', self)
-
-		self.rightgrid.addWidget(self.addGraph_button)
+		self.buttongrid.addWidget(qtw.QLabel('Add/ Remove Graph:'))
+		self.buttongrid.addWidget(self.addGraph_button)
+		self.buttongrid.addWidget(self.removeGraph_button)
 		self.addGraph_button.clicked.connect(self.addGraph)
-		self.rightgrid.addWidget(self.removeGraph_button)
 		self.removeGraph_button.clicked.connect(self.removeGraph)
+
+		self.rightgrid.addLayout(self.buttongrid, 2, 0)
+		self.rightgrid.setColumnStretch(0, 3)
 
 		# initialise the primary UI elements
 		self.addGraph()
 
-		self.grid_layout.addLayout(self.rightgrid, 0, 2)
+		self.grid_layout.addLayout(self.rightgrid, 0, 1)
 		self.grid_layout.addLayout(self.leftgrid, 0, 0)
+
 		self.setLayout(self.grid_layout)
 
 		app.aboutToQuit.connect(self.closeEvent)
@@ -129,6 +134,8 @@ class MainWindow(qtw.QWidget):
 				MAC_CSI_DATA = self.CSI_DATA[MAC].getPhase()
 
 			if graphType == Graphtype.PLOT.value or graphType == Graphtype.PCA.value:
+				timeAxis = filterWidgetObject.againstTimeChecked()
+
 				if graphType == Graphtype.PLOT.value:
 					# if passband freq is none just plot normally
 					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, subcarrier: {int(subcarrier)}, "
@@ -138,18 +145,30 @@ class MainWindow(qtw.QWidget):
 					Y = [x[subcarrier] for x in MAC_CSI_DATA if len(x) > subcarrier]
 					Y = self.applyFilter(Y, filter_type, filterWidgetObject)
 					# Y = [x[subcarrier] for x in MAC_CSI_DATA]
-					X = [i + 1 for i in range(len(Y))]
-					self.mplCanvas[int(index)].plot(X, Y, f"{csi_type} plot of subcarrier {subcarrier}", csi_type,
-													subcarrier)
+					if timeAxis:
+						X = self.CSI_DATA[MAC].getTimeStamp()
+						self.mplCanvas[int(index)].plot(X, Y, f"{csi_type} plot of subcarrier {subcarrier}", csi_type,
+														subcarrier, Xaxis.TIME.value)
+					else:
+						X = [i + 1 for i in range(len(Y))]
+						self.mplCanvas[int(index)].plot(X, Y, f"{csi_type} plot of subcarrier {subcarrier}", csi_type,
+													subcarrier, Xaxis.PACKETS.value)
 				else:
+					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, Graph type: PCA")
 					MAC_CSI_DATA = np.array(MAC_CSI_DATA)
 					pca = PCA(n_components=4)
 					Y = pca.fit_transform(MAC_CSI_DATA).transpose()
 					Y = self.applyFilter(Y, filter_type, filterWidgetObject)
-					self.mplCanvas[int(index)].PCA_plot(Y, csi_type)
+					if timeAxis:
+						X = self.CSI_DATA[MAC].getTimeStamp()
+						self.mplCanvas[int(index)].PCA_plot(X, Y, csi_type, Xaxis.TIME.value)
+					else:
+						X = [i + 1 for i in range(len(Y))]
+						self.mplCanvas[int(index)].PCA_plot(X, Y, csi_type, Xaxis.PACKETS.value)
 
 			elif graphType == Graphtype.HEATMAP.value:
 				MAC_CSI_DATA = np.array(MAC_CSI_DATA).transpose()
+				self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, Graph type: Heatmap")
 				self.mplCanvas[int(index)].heatmap_plot(MAC_CSI_DATA, MAC, csi_type)
 		except ValueError:
 			self.logWidget.insertLog(f"Error occurred: Please import a file first or set the filters correctly.")
@@ -173,6 +192,7 @@ class MainWindow(qtw.QWidget):
 		temp_data = np.asarray(data, dtype="float32")
 		if temp_data.ndim == 1:
 			data = [data]
+
 		try:
 			for Y in data:
 				if filter == Filters.BUTTERWORTH.value:

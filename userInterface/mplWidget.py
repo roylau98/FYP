@@ -4,10 +4,14 @@ from PyQt5 import QtWidgets as qtw
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
 
+from scipy.signal import find_peaks
+from utilities.classes import Xaxis
+
 class Mpl(qtw.QGroupBox):
     def __init__(self, id):
         super(Mpl, self).__init__()
         self.setTitle(f"Graph {id}")
+        self.setFixedWidth(1000)
         self.initUI()
 
     def initUI(self):
@@ -19,16 +23,20 @@ class Mpl(qtw.QGroupBox):
         layout.addWidget(self.canvas)
         self.ax = self.canvas.figure.add_subplot(111)
 
-    def plot(self, X, Y, label, csi_type, subcarrier):
+    def plot(self, X, Y, label, csi_type, subcarrier, x_axis):
         # remove the entire plot
         # self.ax.remove()
         self.fig.clear()
 
         self.ax = self.canvas.figure.add_subplot(111)
         self.canvas.draw()
-        self.ax.plot(tuple(X), tuple(Y), label=label)
+        if x_axis == Xaxis.PACKETS.value:
+            self.ax.plot(tuple(X), tuple(Y), label=label)
+        else:
+            self.ax.scatter(X, Y, s=3)
+
         self.ax.set_title(f"CSI {csi_type} of subcarrier {subcarrier}")
-        self.ax.set_xlabel("Number of packets")
+        self.ax.set_xlabel(f"{x_axis}")
 
         self.ax.set_ylabel(f"CSI {csi_type}")
         self.canvas.draw()
@@ -44,15 +52,23 @@ class Mpl(qtw.QGroupBox):
         self.ax.set_xlabel(f"Packet index")
         self.canvas.draw()
 
-    def PCA_plot(self, pca_data, csi_type):
+    def PCA_plot(self, X, Y, csi_type, x_axis):
         self.fig.clear()
 
         self.canvas.draw()
-        self.ax.set_title(f"PCA of CSI {csi_type}")
+        self.fig.suptitle(f"PCA of CSI {csi_type}")
+        print(len(X), len(Y[0]))
         for i in range(4):
             self.ax = self.canvas.figure.add_subplot(2, 2, i+1)
-            self.ax.plot(pca_data[i], label=f"PCA {i}")
-            self.ax.set_xlabel("Packets")
+            #peaks, _ = find_peaks(Y[i], height=0)
+
+            #self.ax.plot(Y[i], label=f"PCA {i}")
+            #self.ax.plot(peaks, Y[i][peaks], "x")
+            if x_axis == Xaxis.PACKETS.value:
+                self.ax.plot(Y[i], label=f"PCA {i}")
+            else:
+                self.ax.scatter(X, Y[i], s=3)
+            self.ax.set_xlabel(x_axis)
             self.ax.set_ylabel("CSI Amplitude")
             self.ax.set_title(f"({chr(97 + i)})")
 

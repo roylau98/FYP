@@ -28,7 +28,6 @@ class filterWidget(qtw.QGroupBox):
         self.samplingFrequency = qtw.QTextEdit()
         self.samplingFrequency.setFixedWidth(200)
         self.samplingFrequency_label = qtw.QLabel("Sampling\nFrequency (Hz): ")
-        #self.samplingFrequency.setReadOnly(True)
 
         self.window_wavelet = qtw.QTextEdit()
         self.window_wavelet.setFixedWidth(200)
@@ -47,6 +46,8 @@ class filterWidget(qtw.QGroupBox):
         self.graph_type = qtw.QComboBox()
         self.graph_type_label = qtw.QLabel("Graph\nType: ")
         self.addGraphs()
+
+        self.againstTime = qtw.QCheckBox("X-axis:\nTime")
 
         self.grid_layout.addWidget(self.mac_address, 0, 1, 1, 1)
         self.grid_layout.addWidget(self.mac_label, 0, 0, 1, 1)
@@ -68,6 +69,8 @@ class filterWidget(qtw.QGroupBox):
         self.grid_layout.addWidget(self.graph_type_label, 3, 2, 1, 1)
         self.grid_layout.addWidget(self.graph_type, 3, 3, 1, 1)
         self.grid_layout.addWidget(self.filterButton, 4, 3, 1, 1)
+
+        self.grid_layout.addWidget(self.againstTime, 4, 0, 1, 1)
 
         self.setLayout(self.grid_layout)
 
@@ -129,3 +132,6 @@ class filterWidget(qtw.QGroupBox):
     def addGraphs(self):
         for graph in Graphtype:
             self.graph_type.addItem(graph.value)
+
+    def againstTimeChecked(self):
+        return self.againstTime.isChecked()

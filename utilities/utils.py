@@ -81,14 +81,17 @@ def CSVparser(CSVFile):
         # 2D array of packets x subcarriers
         amplitudes = []
         phases = []
+        timestamp = []
         for index, row in filtered_df.iterrows():
             amp, phase = process(row["CSI_DATA"])
             if len(amp) > 0:
                 amplitudes.append(amp)
             if len(phase) > 0:
                 phases.append(phase)
+            if len(amp) and len(phase) > 0:
+                timestamp.append(row["real_timestamp"])
 
-        CSI_amplitudes[mac] = CSIDATA(amplitudes, phases)
+        CSI_amplitudes[mac] = CSIDATA(amplitudes, phases, timestamp)
     return CSI_amplitudes, macAddresses
 
 
@@ -103,10 +106,7 @@ def butter_lowpass(cutoffFrequency, samplingFrequency, order=2):
 
 
 def butter_lowpass_filter(data, cutoffFrequency, samplingFrequency, order=2):
-    #temp = np.asarray(data, dtype="float32")
-    #print(temp.shape)
     b, a = butter_lowpass(cutoffFrequency, samplingFrequency, order=order)
-    #y = lfilter(b, a, data)
     y = filtfilt(b, a, data)
     return y
 

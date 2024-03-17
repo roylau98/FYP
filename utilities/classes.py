@@ -22,3 +22,8 @@ class Graphtype(Enum):
     HEATMAP = "Heatmap"
     PCA = "PCA"
 
+
+class Xaxis(Enum):
+    __order__ = "TIME PACKETS"
+    TIME = "Time (seconds)"
+    PACKETS = "Packets"
