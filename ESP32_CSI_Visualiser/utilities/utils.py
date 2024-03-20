@@ -6,7 +6,7 @@ import pywt
 
 from scipy.signal import butter, filtfilt
 from hampel import hampel
-from utilities.CSI import CSIDATA
+from ESP32_CSI_Visualiser.utilities.CSI import CSIDATA
 
 def process(csi_data):
     # Parser
