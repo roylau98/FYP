@@ -1,13 +1,11 @@
 import math
 
-import numpy as np
 import pandas as pd
 import re
 import pywt
 
-from scipy.signal import butter, lfilter, filtfilt
+from scipy.signal import butter, filtfilt
 from hampel import hampel
-from datetime import datetime
 from utilities.CSI import CSIDATA
 
 def process(csi_data):
@@ -27,45 +25,10 @@ def process(csi_data):
             amplitudes.append(math.sqrt(csi_data[i] ** 2 + csi_data[i+1] ** 2))
             phases.append(math.atan2(csi_data[i], csi_data[i+1]))
 
-        # for i, val in enumerate(csi_data):
-        #     if i % 2 == 0:
-        #         imaginary.append(val)
-        #     else:
-        #         real.append(val)
-        #
-        # csi_size = len(csi_data)
-        # amplitudes = []
-        # phases = []
-        # if len(imaginary) > 0 and len(real) > 0:
-        #     for j in range(int(csi_size / 2)):
-        #         amplitude_calc = math.sqrt(imaginary[j] ** 2 + real[j] ** 2)
-        #         amplitudes.append(amplitude_calc)
-        #         phase_calc = math.atan2(imaginary[j], real[j])
-        #         phases.append(phase_calc)
         return amplitudes, phases
     except:
         return [], []
 
-
-def process_2D(csi_data):
-    # Parser
-    try:
-        csi_data = csi_data.split(" ")
-        csi_data[0] = csi_data[0].replace("[", "")
-        csi_data[-1] = csi_data[-1].replace("]", "")
-
-        csi_data.pop()
-        csi_data = [int(c) for c in csi_data if c]
-        imaginary = []
-        real = []
-        for i, val in enumerate(csi_data):
-            if i % 2 == 0:
-                imaginary.append(val)
-            else:
-                real.append(val)
-        return real, imaginary
-    except:
-        return [], []
 
 def CSVparser(CSVFile):
     CSI_amplitudes = {}
