@@ -14,7 +14,7 @@ from sklearn.decomposition import PCA
 class MainWindow(qtw.QWidget):
 	def __init__(self):
 		super(MainWindow, self).__init__()
-		self.setWindowTitle("ESP32 CSI Visualiser")
+		self.setWindowTitle("ESP32_CSI_Visualiser")
 		self.setWindowIcon(qtg.QIcon('resources/audio-waves.png'))
 
 		self.dataframe = None
@@ -106,7 +106,7 @@ class MainWindow(qtw.QWidget):
 			self.filterWidgets.pop()
 
 	def CSVparserwrapper(self, CSVFile):
-		self.logWidget.insertLog(f"Importing File: {CSVFile} into ESP32 CSI Visualiser.")
+		self.logWidget.insertLog(f"Importing File: {CSVFile} into ESP32_CSI_Visualiser.")
 		self.CSI_DATA, self.macAddresses = CSVparser(CSVFile)
 
 		for i in self.filterWidgets:
@@ -168,7 +168,7 @@ class MainWindow(qtw.QWidget):
 			msg.exec_()
 
 	def closeEvent(self, event):
-		self.logWidget.insertLog("Exiting ESP32 CSI Visualiser")
+		self.logWidget.insertLog("Exiting ESP32_CSI_Visualiser")
 		import sys
 		sys.exit(0)
 
