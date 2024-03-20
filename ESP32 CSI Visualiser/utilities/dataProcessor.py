@@ -1,5 +1,4 @@
 from PyQt5 import QtCore as qtc
-from datetime import datetime
 from utilities.utils import process
 
 class DataProcessor(qtc.QObject):
@@ -18,7 +17,6 @@ class DataProcessor(qtc.QObject):
                 if data[0] == "type" and data[1] == "role" and data[2] == "mac":
                     self.result_signal.emit(("header", data))
 
-                data[18] = datetime.now().strftime("%d/%m/%Y_%H:%M:%S")
                 amp = process(data[25])
 
                 MAC = data[2]

@@ -1,4 +1,4 @@
-from utils import process, process_2D, butter_lowpass_filter, dwt_filter
+from utils import process, butter_lowpass_filter, dwt_filter
 import os
 import pandas as pd
 import numpy as np
@@ -46,7 +46,7 @@ def process_training_data():
 
 def process_env_data():
     extension = ".csv"
-    for file in os.listdir("../data/real_env"):
+    for file in os.listdir("../../data/real_env"):
         if file.endswith(extension):
             print(file)
             df = pd.read_csv("../data/real_env/" + file)
@@ -82,7 +82,7 @@ def process_movement_data():
     for i in range(10):
         dict[str(i)] = []
 
-    for file in os.listdir("../data/movement_new"):
+    for file in os.listdir("../../data/movement_new"):
         if file.endswith(extension):
             df = pd.read_csv("../data/movement_new/" + file)
 
@@ -125,7 +125,7 @@ def process_movement_data_pca():
     for i in range(10):
         dict[str(i)] = []
 
-    for file in os.listdir("../data/movement_new"):
+    for file in os.listdir("../../data/movement_new"):
         if file.endswith(extension):
             df = pd.read_csv("../data/movement_new/" + file)
 
