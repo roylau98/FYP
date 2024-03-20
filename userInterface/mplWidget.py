@@ -53,23 +53,26 @@ class Mpl(qtw.QGroupBox):
         self.canvas.draw()
 
     def PCA_plot(self, X, Y, csi_type, x_axis):
+        """
+        Plots the top k=4 principal components of the CSI data
+        :param X:
+        :param Y:
+        :param csi_type:
+        :param x_axis:
+        :return:
+        """
         self.fig.clear()
 
         self.canvas.draw()
         self.fig.suptitle(f"PCA of CSI {csi_type}")
-        print(len(X), len(Y[0]))
         for i in range(4):
             self.ax = self.canvas.figure.add_subplot(2, 2, i+1)
-            #peaks, _ = find_peaks(Y[i], height=0)
-
-            #self.ax.plot(Y[i], label=f"PCA {i}")
-            #self.ax.plot(peaks, Y[i][peaks], "x")
             if x_axis == Xaxis.PACKETS.value:
                 self.ax.plot(Y[i], label=f"PCA {i}")
             else:
                 self.ax.scatter(X, Y[i], s=3)
             self.ax.set_xlabel(x_axis)
-            self.ax.set_ylabel("CSI Amplitude")
+            self.ax.set_ylabel(f"PCA {i+1}")
             self.ax.set_title(f"({chr(97 + i)})")
 
         self.canvas.draw()

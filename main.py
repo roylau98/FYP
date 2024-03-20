@@ -14,10 +14,6 @@ from utilities.CSI import CSIDATA
 from utilities.dataProcessor import DataProcessor
 from sklearn.decomposition import PCA
 
-import pandas as pd
-from datetime import datetime
-import queue
-
 
 class MainWindow(qtw.QWidget):
 	def __init__(self):
@@ -125,7 +121,6 @@ class MainWindow(qtw.QWidget):
 		try:
 			graphType = filterWidgetObject.getGraphType()
 			MAC, subcarrier, index, cutoffFreq, csi_type, filter_type = filterWidgetObject.getAttributes()
-			samplingFreq = filterWidgetObject.getSamplingFreq()
 
 			# get the amplitude or phase value
 			if csi_type == CSItype.AMPLITUDE.value:
@@ -138,9 +133,7 @@ class MainWindow(qtw.QWidget):
 
 				if graphType == Graphtype.PLOT.value:
 					# if passband freq is none just plot normally
-					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, subcarrier: {int(subcarrier)}, "
-											 f"Sampling frequency: {str(round(samplingFreq, 2))} (Hz), "
-											 f"Filter: {filter_type}.")
+					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, subcarrier: {int(subcarrier)}, Filter: {filter_type}.")
 					# MAC_CSI_DATA can be either amplitude or phase, packet x subcarrier
 					Y = [x[subcarrier] for x in MAC_CSI_DATA if len(x) > subcarrier]
 					Y = self.applyFilter(Y, filter_type, filterWidgetObject)
@@ -154,7 +147,7 @@ class MainWindow(qtw.QWidget):
 						self.mplCanvas[int(index)].plot(X, Y, f"{csi_type} plot of subcarrier {subcarrier}", csi_type,
 													subcarrier, Xaxis.PACKETS.value)
 				else:
-					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, Graph type: PCA")
+					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, Graph type: PCA, Filter: {filter_type}")
 					MAC_CSI_DATA = np.array(MAC_CSI_DATA)
 					pca = PCA(n_components=4)
 					Y = pca.fit_transform(MAC_CSI_DATA).transpose()

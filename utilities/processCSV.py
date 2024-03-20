@@ -1,4 +1,4 @@
-from utils import process, process_2D, butter_lowpass_filter
+from utils import process, process_2D, butter_lowpass_filter, dwt_filter
 import os
 import pandas as pd
 import numpy as np
@@ -100,7 +100,7 @@ def process_movement_data():
                 new_nparray = new_nparray.transpose()
                 denoised = []
                 for subcarrier in new_nparray:
-                    denoised.append(butter_lowpass_filter(subcarrier, 4.712, 40))
+                    denoised.append(butter_lowpass_filter(subcarrier, 7.5398, 25))
 
                 dict[key].append(denoised)
 
@@ -147,16 +147,25 @@ def process_movement_data_pca():
                 # apply butterworth low pass filter on all subcarriers
                 denoised = []
                 for subcarrier in new_nparray:
-                    denoised.append(butter_lowpass_filter(subcarrier, 4.712, 40))
+                    denoised.append(butter_lowpass_filter(subcarrier, 7.5398, 25))
 
                 # 40 x 64 for PCA, reduce to 4 components
                 denoised = np.asarray(denoised, dtype='float32')
                 denoised = denoised.transpose()
                 pca_newnparray = pca.fit_transform(denoised)
 
-                # 4 x 40
-                pca_newnparray = pca_newnparray.transpose()
-                dict[key].append(pca_newnparray.tolist())
+                # 4 x 40, take the first principal component
+                pca_newnparray = pca_newnparray.transpose()[0]
+                # 2nd round of denoising
+                denoised = butter_lowpass_filter(pca_newnparray, 2.5132, 25)
+                # print(pca_newnparray)
+                # print(pca_newnparray.shape)
+                # exit()
+                # # second round of denoising
+                # denoised = []
+                # for subcarrier in pca_newnparray:
+                #     denoised.append(butter_lowpass_filter(subcarrier, 2.5132, 25))
+                dict[key].append([denoised])
 
     for key, value in dict.items():
         final_array = np.asarray(dict[key], dtype='float32')
@@ -165,10 +174,9 @@ def process_movement_data_pca():
         np.random.shuffle(final_array)
         test_array, val_array, train_array = final_array[:50], final_array[50:150], final_array[150:]
         print(train_array.shape, val_array.shape, test_array.shape)
-
-        np.save(f'../data/movement_processed_data_pca_butter/{key}_table_test.npy', test_array)
-        np.save(f'../data/movement_processed_data_pca_butter/{key}_table_val.npy', val_array)
-        np.save(f'../data/movement_processed_data_pca_butter/{key}_table_train.npy', train_array)
+        np.save(f'../data/windtalker_steps/{key}_table_test.npy', test_array)
+        np.save(f'../data/windtalker_steps/{key}_table_val.npy', val_array)
+        np.save(f'../data/windtalker_steps/{key}_table_train.npy', train_array)
 
 
 def main():
