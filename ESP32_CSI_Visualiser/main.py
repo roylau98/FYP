@@ -9,6 +9,7 @@ from userInterface.mplWidget import Mpl
 from utilities.utils import CSVparser, butter_lowpass_filter, hampel_filter, dwt_filter
 from utilities.classes import Graphtype, CSItype, Filters, Xaxis
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 
 class MainWindow(qtw.QWidget):
@@ -118,7 +119,7 @@ class MainWindow(qtw.QWidget):
 			graphType = filterWidgetObject.getGraphType()
 			MAC, subcarrier, index, cutoffFreq, csi_type, filter_type = filterWidgetObject.getAttributes()
 
-			# get the amplitude or phase value
+			# get the amplitude or phase value, [packet, subcarriers]
 			if csi_type == CSItype.AMPLITUDE.value:
 				MAC_CSI_DATA = self.CSI_DATA[MAC].getAmplitude()
 			elif csi_type == CSItype.PHASE.value:
@@ -128,12 +129,10 @@ class MainWindow(qtw.QWidget):
 				timeAxis = filterWidgetObject.againstTimeChecked()
 
 				if graphType == Graphtype.PLOT.value:
-					# if passband freq is none just plot normally
 					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, subcarrier: {int(subcarrier)}, Filter: {filter_type}.")
 					# MAC_CSI_DATA can be either amplitude or phase, packet x subcarrier
 					Y = [x[subcarrier] for x in MAC_CSI_DATA if len(x) > subcarrier]
 					Y = self.applyFilter(Y, filter_type, filterWidgetObject)
-					# Y = [x[subcarrier] for x in MAC_CSI_DATA]
 					if timeAxis:
 						X = self.CSI_DATA[MAC].getTimeStamp()
 						self.mplCanvas[int(index)].plot(X, Y, f"{csi_type} plot of subcarrier {subcarrier}", csi_type,
@@ -145,6 +144,8 @@ class MainWindow(qtw.QWidget):
 				else:
 					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, Graph type: PCA, Filter: {filter_type}")
 					MAC_CSI_DATA = np.array(MAC_CSI_DATA)
+					# scale the values first
+					MAC_CSI_DATA = StandardScaler().fit_transform(MAC_CSI_DATA)
 					pca = PCA(n_components=4)
 					Y = pca.fit_transform(MAC_CSI_DATA).transpose()
 					Y = self.applyFilter(Y, filter_type, filterWidgetObject)
@@ -156,7 +157,10 @@ class MainWindow(qtw.QWidget):
 						self.mplCanvas[int(index)].PCA_plot(X, Y, csi_type, Xaxis.PACKETS.value)
 
 			elif graphType == Graphtype.HEATMAP.value:
+				# subcarriers x packet
 				MAC_CSI_DATA = np.array(MAC_CSI_DATA).transpose()
+				# apply filters if any
+				MAC_CSI_DATA = self.applyFilter(MAC_CSI_DATA, filter_type, filterWidgetObject)
 				self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, Graph type: Heatmap")
 				self.mplCanvas[int(index)].heatmap_plot(MAC_CSI_DATA, MAC, csi_type)
 		except ValueError:
