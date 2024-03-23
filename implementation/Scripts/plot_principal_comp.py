@@ -1,7 +1,7 @@
 import sys
-sys.path.insert(1, '..')
+sys.path.insert(1, '../ESP32_CSI_Visualiser')
 
-from implementation.ESP32_CSI_Visualiser.utilities.utils import CSVparser, butter_lowpass_filter
+from utilities.utils import CSVparser, butter_lowpass_filter
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
