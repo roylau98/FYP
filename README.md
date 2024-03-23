@@ -8,7 +8,7 @@ The goals of the final year project was:
 2. Investigate the feasibility of performing respiration sensing using the ESP32 CSI Tool.
 3. To build a keystroke inference system using the ESP32 CSI Tool for CSI collection and a deep learning model for keystroke inference.
 
-This `README.md` shows the file found in this folder, and instructions to setup and run the codes.
+This `README.md` shows the files found in this folder, and instructions to setup and run the codes.
 
 # Setting up
 
@@ -63,11 +63,11 @@ Codes for the model is given in the form of a Jupyter notebook. To re-process th
 The codes for the ESP32 CSI Visualiser is found in `ESP32_CSI_Visualiser`. Sample data, and respiration data collected can be found in the `data\sample_data.csv` and the `data\respiration_data` folder.
 
 # Running the code
-To run the ESP32 CSI Visualiser, open up command prompt and run the following command. This activates the virtual environment.
+To run the ESP32 CSI Visualiser, open up command prompt in the root directory and run the following command. This activates the virtual environment.
 
 ```cmd
 .venv\Scripts\activate
-python main.py
+python implementation\ESP32_CSI_VIsualiser\main.py
 ```
 
 To run the codes for the model, open up command prompt and run the following command.
@@ -76,7 +76,5 @@ To run the codes for the model, open up command prompt and run the following com
 jupyter labs
 ```
 
-This opens up the Jupyter Lab environment which opens in a browser tab. In the left panel, double-click on the "Source Code" folder to enter it. Double-click on any notebook to open it in the right panel. You should be able to see the code now on the right panel.
+This opens up the Jupyter Lab environment which opens in a browser tab. In the left panel, double-click on the `implementation` folder to enter it, then double-click again on the `neuralNetwork` folder to enter it. Double-click on `model.ipynb` to open it in the right panel. You should be able to see the code now on the right panel.
 At the top left, click on "Run", then "Run All Cells" which will run all the code in that notebook. 
-
-# Acknowledgements
