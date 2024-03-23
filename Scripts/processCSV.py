@@ -59,9 +59,9 @@ def process_data():
         np.random.shuffle(final_array)
         test_array, val_array, train_array = final_array[:50], final_array[50:150], final_array[150:]
         print(train_array.shape, val_array.shape, test_array.shape)
-        np.save(f'../data/process_data/{key}_table_test.npy', test_array)
-        np.save(f'../data/process_data/{key}_table_val.npy', val_array)
-        np.save(f'../data/process_data/{key}_table_train.npy', train_array)
+        np.save(f'../data/processed_data/{key}_table_test.npy', test_array)
+        np.save(f'../data/processed_data/{key}_table_val.npy', val_array)
+        np.save(f'../data/processed_data/{key}_table_train.npy', train_array)
 
 def main():
     process_data()
