@@ -4,9 +4,9 @@ FYP Implementation Project
 The codes shown in this repository was written for the final year project (SCSE23-0363) in NTU.
 
 The goals of the final year project was:
-1. To build a GUI that can parse, process and visualise CSI data captured using the ESP32 microcontroller and ESP32 CSI Tool.
-2. Investigate the feasibility of performing respiration sensing using the ESP32 microcontroller and ESP32 CSI Tool.
-3. To build a keystroke inference system using the ESP32 microcontroller and ESP32 CSI Tool for CSI collection and a deep learning model for keystroke inference.
+1. To build a GUI that can parse, process and visualise CSI data captured using the ESP32 CSI Tool.
+2. Investigate the feasibility of performing respiration sensing using the ESP32 CSI Tool.
+3. To build a keystroke inference system using the ESP32 CSI Tool for CSI collection and a deep learning model for keystroke inference.
 # Setting up
 
 The following instructions setups a new virtual environment for python and installs the needed libraries.
