@@ -1,4 +1,4 @@
-FYP Implementation Project
+Final Year Project (SCSE23-0363)
 
 # About
 The codes shown in this repository was written for the final year project (SCSE23-0363) in NTU.
@@ -7,10 +7,13 @@ The goals of the final year project was:
 1. To build a GUI that can parse, process and visualise CSI data captured using the ESP32 CSI Tool.
 2. Investigate the feasibility of performing respiration sensing using the ESP32 CSI Tool.
 3. To build a keystroke inference system using the ESP32 CSI Tool for CSI collection and a deep learning model for keystroke inference.
+
+This `README.md` shows the file found in this folder, and instructions to setup and run the codes.
+
 # Setting up
 
 The following instructions setups a new virtual environment for python and installs the needed libraries.
-These instructions assumes that the user is using a Windows machine. Ensure that Python 3.10 is installed as well, do not use Python 3.12. Open the command prompt in the root directory "" and enter the following commands.
+These instructions assumes that the user is using a Windows machine. Ensure that Python 3.10 is installed as well, do not use Python 3.12. Open the command prompt in the root directory and enter the following commands.
 
 ```cmd
 py -3.10 -m venv .venv
@@ -25,7 +28,13 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-# Directory structure
+# Folder struture and files
+
+The following is a tree structure that shows the files found in this folder. A brief description of what each file is for is included at the side.
+
+Codes for the model is given in the form of a Jupyter notebook. To re-process the raw keystroke inference file, one should remove the files found in `data\processed_data` before running the python file `Scripts\processCSV.py`
+
+The codes for the ESP32 CSI Visualiser is found in `ESP32_CSI_Visualiser`. Sample data, and respiration data collected can be found in the `data\sample_data.csv` and the `data\respiration_data` folder.
 
 # Running the code
 To run the ESP32 CSI Visualiser, open up command prompt and run the following command. This activates the virtual environment.
