@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 def process_data():
     extension = ".csv"
@@ -41,6 +42,8 @@ def process_data():
                 # 40 x 64 for PCA, reduce to 4 components
                 denoised = np.asarray(denoised, dtype='float32')
                 denoised = denoised.transpose()
+                # scale the values
+                denoised = StandardScaler().fit_transform(denoised)
                 pca_newnparray = pca.fit_transform(denoised)
 
                 # 4 x 40, take the first principal component
