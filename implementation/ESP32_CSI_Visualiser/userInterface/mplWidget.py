@@ -4,7 +4,7 @@ from PyQt5 import QtWidgets as qtw
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
 from matplotlib.figure import Figure
 
-from implementation.ESP32_CSI_Visualiser.utilities.classes import Xaxis
+from utilities.classes import Xaxis
 
 class Mpl(qtw.QGroupBox):
     def __init__(self, id):

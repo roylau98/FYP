@@ -1,6 +1,4 @@
-import sys
-sys.path.insert(1, '..')
-from implementation.ESP32_CSI_Visualiser.utilities.utils import process, butter_lowpass_filter
+from utils import process, butter_lowpass_filter
 import os
 import pandas as pd
 import numpy as np

@@ -63,16 +63,26 @@ Codes for the model is given in the form of a Jupyter notebook. To re-process th
 The codes for the ESP32 CSI Visualiser is found in `ESP32_CSI_Visualiser`. Sample data, and respiration data collected can be found in the `data\sample_data.csv` and the `data\respiration_data` folder.
 
 # Running the code
-To run the ESP32 CSI Visualiser, open up command prompt in the root directory and run the following command. This activates the virtual environment.
-
+Before running any code or commands, ensures that the virtual environment is activated.
 ```cmd
 .venv\Scripts\activate
-python implementation\ESP32_CSI_VIsualiser\main.py
+```
+To run the ESP32 CSI Visualiser, open up command prompt in the root directory and run the following commands.
+
+```cmd
+cd ESP32_CSI_Visualiser
+python main.py
+```
+
+To re-process and generate a new set of processed data from the raw keystroke inference data, open up command prompt in the root directory and run the following commands.
+
+```cmd
+cd Scripts
+python processCSV.py
 ```
 
 To run the codes for the model, open up command prompt and run the following command.
 ```cmd
-.venv\Scripts\activate
 jupyter labs
 ```
 
