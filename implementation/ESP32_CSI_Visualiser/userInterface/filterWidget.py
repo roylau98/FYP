@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets as qtw
-from ESP32_CSI_Visualiser.utilities.classes import Filters, CSItype, Graphtype
+from implementation.ESP32_CSI_Visualiser.utilities.classes import Filters, CSItype, Graphtype
 
 class filterWidget(qtw.QGroupBox):
     def __init__(self, id):

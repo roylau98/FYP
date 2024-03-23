@@ -1,10 +1,9 @@
 import sys
-sys.path.insert(1, '../implementation')
-from ESP32_CSI_Visualiser.utilities.utils import process, butter_lowpass_filter
+sys.path.insert(1, '..')
+from implementation.ESP32_CSI_Visualiser.utilities.utils import process, butter_lowpass_filter
 import os
 import pandas as pd
 import numpy as np
-from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 def process_data():
@@ -15,9 +14,9 @@ def process_data():
     for i in range(10):
         dict[str(i)] = []
 
-    for file in os.listdir("../data/keystroke_inference_raw/"):
+    for file in os.listdir("../../data/keystroke_inference_raw/"):
         if file.endswith(extension):
-            df = pd.read_csv("../data/keystroke_inference_raw/" + file)
+            df = pd.read_csv("../../data/keystroke_inference_raw/" + file)
 
             # 64 x 40
             for i in range(40, len(df)-41, 41):
@@ -59,9 +58,9 @@ def process_data():
         np.random.shuffle(final_array)
         test_array, val_array, train_array = final_array[:50], final_array[50:150], final_array[150:]
         print(train_array.shape, val_array.shape, test_array.shape)
-        np.save(f'../data/processed_data/{key}_table_test.npy', test_array)
-        np.save(f'../data/processed_data/{key}_table_val.npy', val_array)
-        np.save(f'../data/processed_data/{key}_table_train.npy', train_array)
+        np.save(f'../../data/processed_data/{key}_table_test.npy', test_array)
+        np.save(f'../../data/processed_data/{key}_table_val.npy', val_array)
+        np.save(f'../../data/processed_data/{key}_table_train.npy', train_array)
 
 def main():
     process_data()
