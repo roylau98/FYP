@@ -15,9 +15,9 @@ def process_data():
     for i in range(10):
         dict[str(i)] = []
 
-    for file in os.listdir("../data/movement_new/"):
+    for file in os.listdir("../data/keystroke_inference_raw/"):
         if file.endswith(extension):
-            df = pd.read_csv("../data/movement_new/" + file)
+            df = pd.read_csv("../data/keystroke_inference_raw/" + file)
 
             # 64 x 40
             for i in range(40, len(df)-41, 41):
