@@ -135,3 +135,5 @@ The tool supports multiple plots up to 4 different plots. To add more canvas for
 ![Processed_plot](documentation/images/Processed_Plot.png)
 
 Therefore, the multiple plots allows users to compare either between different subcarriers, or to look at the results of applying filters on the CSI data.
+
+If using data from the `data\respiration_data` folder or `sample_data`, filter for the B0:CA:68:91:B2:F5 MAC address.
