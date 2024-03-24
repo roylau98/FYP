@@ -93,19 +93,19 @@ At the top left, click on "Run", then "Run All Cells" which will run all the cod
 
 The ESP32 CSI Visualiser supports parsing, plotting and processing of raw CSI data from the ESP32 CSI Tool. The following image shows the UI elements of the tool.
 
-![UI](documentation\images\UI.png)
+![UI](documentation/images/UI.png)
 
 ## Import and Parse files
 
 To import CSV files containing raw CSI data, use the "Browse" button to search and import the CSV file. 
 
-![UI](documentation\images\Import.png)
+![UI](documentation/images/Import.png)
 
 ## Process and Filter files
 
 After importing the file, use the following widget to process and filter the CSI data. 
 
-![UI](documentation\images\Process.png)
+![UI](documentation/images/Process.png)
 
 There are 3 types of filters supported: (1) 2nd-order Butterworth low-pass filter, (2) Hampel filter, and (3) Discrete Wavelet Transform (DWT).
 
