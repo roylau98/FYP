@@ -13,7 +13,7 @@ This `README.md` shows the files found in this folder, and instructions to setup
 # Setting up
 
 The following instructions setups a new virtual environment for python and installs the needed libraries.
-These instructions assumes that the user is using a Windows machine. Ensure that Python 3.10 is installed as well, do not use Python 3.12. Open the command prompt in the root directory and enter the following commands.
+These instructions assumes that the user is using a Windows machine. Ensure that Python 3.10 is installed as well, do not use Python 3.12. Open the command prompt in the root directory and enter the following commands inside the root directory `FYP`.
 
 ```cmd
 py -3.10 -m venv .venv
