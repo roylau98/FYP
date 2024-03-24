@@ -34,7 +34,7 @@ def process_data():
                 # apply butterworth low pass filter on all subcarriers
                 denoised = []
                 for subcarrier in new_nparray:
-                    denoised.append(butter_lowpass_filter(subcarrier, 7.5398, 25))
+                    denoised.append(butter_lowpass_filter(subcarrier, 10, 25))
 
                 # 40 x 64 for PCA, reduce to 4 components
                 denoised = np.asarray(denoised, dtype='float32')
@@ -46,7 +46,7 @@ def process_data():
                 # 4 x 40, take the first principal component
                 pca_newnparray = pca_newnparray.transpose()[0]
                 # 2nd round of denoising
-                denoised = butter_lowpass_filter(pca_newnparray, 2.5132, 25)
+                denoised = butter_lowpass_filter(pca_newnparray, 5, 25)
                 dict[key].append([denoised])
 
     for key, value in dict.items():

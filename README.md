@@ -113,4 +113,4 @@ For the Butterworth low-pass filter, one needs to set both the cutoff frequency,
 For Hampel filter and DWT, one needs to set the Window/ Wavelet(db) used.
 
 Three types of graphs are supported. The first is a normal plot, and one needs to choose the subcarrier to plot. The second is a heatmap that plots all subcarriers. The last plot supported is the principal component analysis (PCA).
-Filters are automatically applied to the raw data, before being plotted.
+Filters are automatically applied to the amplitude or phase, before being plotted.
