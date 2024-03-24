@@ -67,21 +67,21 @@ Before running any code or commands, ensures that the virtual environment is act
 ```cmd
 .venv\Scripts\activate
 ```
-To run the ESP32 CSI Visualiser, open up command prompt in the root directory `FYP` and run the following commands.
+To run the ESP32 CSI Visualiser run the following commands.
 
 ```cmd
 cd implementation\ESP32_CSI_Visualiser
 python main.py
 ```
 
-To re-process and generate a new set of processed data from the raw keystroke inference data, open up command prompt in the root directory `FYP` and run the following commands.
+To re-process and generate a new set of processed data from the raw keystroke inference data run the following commands.
 
 ```cmd
 cd implementation\Scripts
 python processCSV.py
 ```
 
-To run the codes for the model, open up command prompt in the root directory `FYP` and run the following command.
+To run the codes for the model and run the following command.
 ```cmd
 jupyter lab
 ```
@@ -97,7 +97,7 @@ The ESP32 CSI Visualiser supports parsing, plotting and processing of raw CSI da
 
 ## Import and Parse files
 
-To import CSV files containing raw CSI data, use the "Browse" button to search and import the file. 
+To import CSV files containing raw CSI data, use the "Browse" button to search and import the CSV file. 
 
 ![UI](documentation\images\Import.png)
 
@@ -114,3 +114,15 @@ For Hampel filter and DWT, one needs to set the Window/ Wavelet(db) used.
 
 Three types of graphs are supported. The first is a normal plot, and one needs to choose the subcarrier to plot. The second is a heatmap that plots all subcarriers. The last plot supported is the principal component analysis (PCA).
 Filters are automatically applied to the amplitude or phase, before being plotted.
+
+The tool supports plotting against time and packets by checking the button "X-axis: Time". Also, one can choose to plot either the CSI amplitude or phase by using the CSI dropdown.
+
+After setting up all the parameters, click on the "Apply filter" button to plot the CSI data.
+
+## Plotting
+
+The tool supports multiple plots up to 4 different plots. To add more canvas for plotting, click on the "Add Graph" button and to remove canvas, click on the "Remove Graph" button. The following image shows the CSI amplitude of subcarrier 17. The top graph (Graph 1) is the plot before, while the bottom graph (Graph 2) had a Butterworth low-pass filter applied.
+
+![UI](documentation\images\Processed_Plot.png)
+
+Therefore, the multiple plots allows users to compare either between different subcarriers, or to look at the results of applying filters on the CSI data.
