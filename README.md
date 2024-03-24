@@ -122,9 +122,9 @@ For the Butterworth low-pass filter, one needs to set both the cutoff frequency,
 For Hampel filter and DWT, one needs to set the Window/ Wavelet(db) used.
 
 Three types of graphs are supported. The first is a normal plot, and one needs to choose the subcarrier to plot. The second is a heatmap that plots all subcarriers. The last plot supported is the principal component analysis (PCA).
-Filters are automatically applied to the amplitude or phase, before being plotted.
+Filters are automatically applied to the amplitude or phase, before being plotted. 
 
-The tool supports plotting against time and packets by checking the button "X-axis: Time". Also, one can choose to plot either the CSI amplitude or phase by using the CSI dropdown.
+The tool supports plotting against time and packets by checking the button "X-axis: Time". Note that the DWT filter will not be plotted against time as the output length is shorter. Also, one can choose to plot either the CSI amplitude or phase by using the CSI dropdown.
 
 After setting up all the parameters, click on the "Apply filter" button to plot the CSI data.
 

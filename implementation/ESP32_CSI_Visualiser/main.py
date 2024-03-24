@@ -133,7 +133,8 @@ class MainWindow(qtw.QWidget):
 					# MAC_CSI_DATA can be either amplitude or phase, packet x subcarrier
 					Y = [x[subcarrier] for x in MAC_CSI_DATA if len(x) > subcarrier]
 					Y = self.applyFilter(Y, filter_type, filterWidgetObject)
-					if timeAxis:
+                    # cannot plot results of DWT against Time since the output length are smaller
+					if timeAxis and "DWT" not in filter_type:
 						X = self.CSI_DATA[MAC].getTimeStamp()
 						self.mplCanvas[int(index)].plot(X, Y, f"{csi_type} plot of subcarrier {subcarrier}", csi_type,
 														subcarrier, Xaxis.TIME.value)
@@ -149,7 +150,8 @@ class MainWindow(qtw.QWidget):
 					pca = PCA(n_components=4)
 					Y = pca.fit_transform(MAC_CSI_DATA).transpose()
 					Y = self.applyFilter(Y, filter_type, filterWidgetObject)
-					if timeAxis:
+                    # cannot plot results of DWT against Time since the output length are smaller
+					if timeAxis and "DWT" not in filter_type:
 						X = self.CSI_DATA[MAC].getTimeStamp()
 						self.mplCanvas[int(index)].PCA_plot(X, Y, csi_type, Xaxis.TIME.value)
 					else:
