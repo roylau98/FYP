@@ -91,7 +91,7 @@ jupyter lab
 This opens up the Jupyter Lab environment which opens in a browser tab. In the left panel, double-click on the `implementation` folder to enter it, then double-click again on the `neuralNetwork` folder to enter it. Double-click on `model.ipynb` to open it in the right panel. You should be able to see the code now on the right panel.
 At the top left, click on "Run", then "Run All Cells" which will run all the code in that notebook. 
 
-To only plot the fourth principal component using a script. Replace the file_location with the location of the respiration data (`..\..\data\respiration\<csv_file>`), MAC with the MAC address of the receiver ("B0:CA:68:91:B2:F5") and png_file_name as the output file name.
+To only plot the fourth principal component using a script, run the following commands. Replace the file_location with the location of the respiration data (`..\..\data\respiration\<csv_file>`), MAC with the MAC address of the receiver ("B0:CA:68:91:B2:F5") and png_file_name as the output file name.
 
 ```cmd
 cd implementation\Scripts
