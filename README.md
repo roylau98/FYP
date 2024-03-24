@@ -3,7 +3,7 @@ Final Year Project (SCSE23-0363)
 # About
 The codes shown in this repository was written for the final year project (SCSE23-0363) in NTU.
 
-The goals of the final year project was:
+The objectives of the final year project was:
 1. To build a GUI that can parse, process and visualise CSI data captured using the ESP32 CSI Tool.
 2. Investigate the feasibility of performing respiration sensing using the ESP32 CSI Tool.
 3. To build a keystroke inference system using the ESP32 CSI Tool for CSI collection and a deep learning model for keystroke inference.
@@ -99,13 +99,13 @@ The ESP32 CSI Visualiser supports parsing, plotting and processing of raw CSI da
 
 To import CSV files containing raw CSI data, use the "Browse" button to search and import the CSV file. 
 
-![UI](documentation/images/Import.png)
+![Import](documentation/images/Import.png)
 
 ## Process and Filter files
 
 After importing the file, use the following widget to process and filter the CSI data. 
 
-![UI](documentation/images/Process.png)
+![Process](documentation/images/Process.png)
 
 There are 3 types of filters supported: (1) 2nd-order Butterworth low-pass filter, (2) Hampel filter, and (3) Discrete Wavelet Transform (DWT).
 
@@ -123,6 +123,6 @@ After setting up all the parameters, click on the "Apply filter" button to plot 
 
 The tool supports multiple plots up to 4 different plots. To add more canvas for plotting, click on the "Add Graph" button and to remove canvas, click on the "Remove Graph" button. The following image shows the CSI amplitude of subcarrier 17. The top graph (Graph 1) is the plot before, while the bottom graph (Graph 2) had a Butterworth low-pass filter applied.
 
-![UI](documentation\images\Processed_Plot.png)
+![Processed_plot](documentation/images/Processed_Plot.png)
 
 Therefore, the multiple plots allows users to compare either between different subcarriers, or to look at the results of applying filters on the CSI data.
