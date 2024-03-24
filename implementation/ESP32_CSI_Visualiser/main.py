@@ -31,9 +31,9 @@ class MainWindow(qtw.QWidget):
 	def initUI(self):
 		# setups grid for the layout
 		self.grid_layout = qtw.QGridLayout(self)
-		self.rightgrid = qtw.QGridLayout(self)
-		self.leftgrid = qtw.QGridLayout(self)
-		self.buttongrid = qtw.QGridLayout(self)
+		self.rightgrid = qtw.QGridLayout()
+		self.leftgrid = qtw.QGridLayout()
+		self.buttongrid = qtw.QGridLayout()
 
 		self.logWidget = logWidget()
 		self.rightgrid.addWidget(self.logWidget, 0, 0)
