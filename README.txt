@@ -118,8 +118,7 @@ After importing the file, use the following widget to process and filter the CSI
 
 There are 3 types of filters supported: (1) 2nd-order Butterworth low-pass filter, (2) Hampel filter, and (3) Discrete Wavelet Transform (DWT).
 
-For the Butterworth low-pass filter, one needs to set both the cutoff frequency, and sampling frequency.
-For Hampel filter and DWT, one needs to set the Window/ Wavelet(db) used.
+For the Butterworth low-pass filter, one needs to set both the cutoff frequency, and sampling frequency. For Hampel filter and DWT, one needs to set the Window/ Wavelet(db) used. If the filters are not properly set, errors will be thrown and nothing will be plotted. Ensure that the corresponding fields are set first before plotting.
 
 Three types of graphs are supported. The first is a normal plot, and one needs to choose the subcarrier to plot. The second is a heatmap that plots all subcarriers. The last plot supported is the principal component analysis (PCA).
 Filters are automatically applied to the amplitude or phase, before being plotted. 
