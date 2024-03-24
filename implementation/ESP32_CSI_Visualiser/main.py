@@ -129,7 +129,7 @@ class MainWindow(qtw.QWidget):
 				timeAxis = filterWidgetObject.againstTimeChecked()
 
 				if graphType == Graphtype.PLOT.value:
-					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, subcarrier: {int(subcarrier)}, Filter: {filter_type}.")
+					self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, Subcarrier: {int(subcarrier)}, Filter: {filter_type}.")
 					# MAC_CSI_DATA can be either amplitude or phase, packet x subcarrier
 					Y = [x[subcarrier] for x in MAC_CSI_DATA if len(x) > subcarrier]
 					Y = self.applyFilter(Y, filter_type, filterWidgetObject)
@@ -161,7 +161,7 @@ class MainWindow(qtw.QWidget):
 				MAC_CSI_DATA = np.array(MAC_CSI_DATA).transpose()
 				# apply filters if any
 				MAC_CSI_DATA = self.applyFilter(MAC_CSI_DATA, filter_type, filterWidgetObject)
-				self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, Graph type: Heatmap")
+				self.logWidget.insertLog(f"Graph {str(int(index) + 1)}: MAC: {MAC}, Graph type: Heatmap, Filter: {filter_type}")
 				self.mplCanvas[int(index)].heatmap_plot(MAC_CSI_DATA, MAC, csi_type)
 		except ValueError:
 			self.logWidget.insertLog(f"Error occurred: Please import a file first or set the filters correctly.")
@@ -189,9 +189,9 @@ class MainWindow(qtw.QWidget):
 		try:
 			for Y in data:
 				if filter == Filters.BUTTERWORTH.value:
-					passbandFreq = filterWidgetObject.getpassbandFrequency()
+					cutoffFreq = filterWidgetObject.getcutoffFrequency()
 					samplingFreq = filterWidgetObject.getSamplingFreq()
-					Y = butter_lowpass_filter(Y, passbandFreq, samplingFreq)
+					Y = butter_lowpass_filter(Y, cutoffFreq, samplingFreq)
 				elif filter == Filters.HAMPEL.value:
 					window_size = filterWidgetObject.getWindowSize()
 					Y = hampel_filter(Y, window_size)

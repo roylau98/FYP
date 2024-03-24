@@ -21,8 +21,8 @@ def main(input_file, MAC, output_file):
 
     fig, ax = plt.subplots(1, 2, figsize=(10, 5), tight_layout=True)
     ax = ax.ravel()
-    ax[0].scatter(timestamp, butter_lowpass_filter(amp_csi_pca, 0.2513, 25), s=3)
-    ax[1].plot(butter_lowpass_filter(amp_csi_pca, 0.2513, 25))
+    ax[0].scatter(timestamp, butter_lowpass_filter(amp_csi_pca, 0.2, 25), s=3)
+    ax[1].plot(butter_lowpass_filter(amp_csi_pca, 0.2, 25))
     ax[0].set_xlabel("Time (seconds)")
     ax[0].set_ylabel("PCA 4")
     ax[1].set_xlabel("Packets")

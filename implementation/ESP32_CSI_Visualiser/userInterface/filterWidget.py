@@ -20,9 +20,9 @@ class filterWidget(qtw.QGroupBox):
         for i in range(128):
             self.subcarrier.addItem(str(i))
 
-        self.passbandFrequency = qtw.QTextEdit()
-        self.passbandFrequency.setFixedWidth(200)
-        self.passbandFrequency_label = qtw.QLabel("Passband\nFrequency: ")
+        self.cutoffFrequency = qtw.QTextEdit()
+        self.cutoffFrequency.setFixedWidth(200)
+        self.cutoffFrequency_label = qtw.QLabel("Cutoff\nFrequency: ")
 
         self.samplingFrequency = qtw.QTextEdit()
         self.samplingFrequency.setFixedWidth(200)
@@ -53,8 +53,8 @@ class filterWidget(qtw.QGroupBox):
         self.grid_layout.addWidget(self.subcarrier, 0, 3, 1, 1)
         self.grid_layout.addWidget(self.subcarrier_label, 0, 2, 1, 1)
 
-        self.grid_layout.addWidget(self.passbandFrequency, 1, 1, 1, 1)
-        self.grid_layout.addWidget(self.passbandFrequency_label, 1, 0, 1, 1)
+        self.grid_layout.addWidget(self.cutoffFrequency, 1, 1, 1, 1)
+        self.grid_layout.addWidget(self.cutoffFrequency_label, 1, 0, 1, 1)
         self.grid_layout.addWidget(self.csi_type, 1, 3, 1, 1)
         self.grid_layout.addWidget(self.type_label, 1, 2, 1, 1)
 
@@ -86,8 +86,8 @@ class filterWidget(qtw.QGroupBox):
     def getindex(self):
         return self.objectName()
 
-    def getpassbandFrequency(self):
-        return float(self.passbandFrequency.toPlainText())
+    def getcutoffFrequency(self):
+        return float(self.cutoffFrequency.toPlainText())
 
     def getSamplingFreq(self):
         try:
@@ -101,7 +101,7 @@ class filterWidget(qtw.QGroupBox):
     def getAttributes(self):
         try:
             return (str(self.mac_address.currentText()), int(self.subcarrier.currentText()), self.objectName(),
-                    float(self.passbandFrequency.toPlainText()), self.csi_type.currentText(), self.filter_type.currentText())
+                    float(self.cutoffFrequency.toPlainText()), self.csi_type.currentText(), self.filter_type.currentText())
         except:
             # if cutoffFreq is not valid (empty value), dont apply butterworth filter
             return (str(self.mac_address.currentText()), int(self.subcarrier.currentText()), self.objectName(),

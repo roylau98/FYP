@@ -33,17 +33,17 @@ pip install -r requirements.txt
 The following is a tree structure that shows the files found in this folder. A brief description of what each file is for is included at the side.
 
 ```markdown
-Final Report
+FYP
 ├── README.MD                               # Instructions for running the codes
 ├── README.txt                              # Instructions for running the codes
 ├── requirements.txt                        # Contains the packages and libraries needed to run all the code
-├── SCSE23_0363_Final_Report.pdf            # Final Report for SCSE23_0363
 ├── implementation                          # Codes and scripts written for the FYP
 │   ├── Scripts                             # Scripts used for keystroke inference and respiration sensing
 │   │   ├── data_collection.py              # Script used to collect keystroke inference data
 │   │   ├── data_generation.py              # Script used to generate keystroke inference data
 │   │   ├── plot_principal_comp.py          # Script used to plot the 4th principal component
-│   │   └── processCSV.py                   # Script used to process raw keystroke inference data
+│   │   ├── processCSV.py                   # Script used to process raw keystroke inference data
+│   │   └── utils.py                        # Utility functions
 │   ├── neuralNetwork                       # Jupyter Notebook for the model
 │   │   ├── model.ipynb                     # Model used for keystroke inference
 │   └── ESP32_CSI_Visualiser                # Code for implementing the ESP32 CSI Visualiser
@@ -63,28 +63,54 @@ Codes for the model is given in the form of a Jupyter notebook. To re-process th
 The codes for the ESP32 CSI Visualiser is found in `ESP32_CSI_Visualiser`. Sample data, and respiration data collected can be found in the `data\sample_data.csv` and the `data\respiration_data` folder.
 
 # Running the code
-Before running any code or commands, ensures that the virtual environment is activated.
+Before running any code or commands, ensures that the virtual environment is activated. Do this by running the following commands in the root directory `FYP`
 ```cmd
 .venv\Scripts\activate
 ```
-To run the ESP32 CSI Visualiser, open up command prompt in the root directory and run the following commands.
+To run the ESP32 CSI Visualiser, open up command prompt in the root directory `FYP` and run the following commands.
 
 ```cmd
-cd ESP32_CSI_Visualiser
+cd implementation\ESP32_CSI_Visualiser
 python main.py
 ```
 
-To re-process and generate a new set of processed data from the raw keystroke inference data, open up command prompt in the root directory and run the following commands.
+To re-process and generate a new set of processed data from the raw keystroke inference data, open up command prompt in the root directory `FYP` and run the following commands.
 
 ```cmd
-cd Scripts
+cd implementation\Scripts
 python processCSV.py
 ```
 
-To run the codes for the model, open up command prompt and run the following command.
+To run the codes for the model, open up command prompt in the root directory `FYP` and run the following command.
 ```cmd
-jupyter labs
+jupyter lab
 ```
 
 This opens up the Jupyter Lab environment which opens in a browser tab. In the left panel, double-click on the `implementation` folder to enter it, then double-click again on the `neuralNetwork` folder to enter it. Double-click on `model.ipynb` to open it in the right panel. You should be able to see the code now on the right panel.
 At the top left, click on "Run", then "Run All Cells" which will run all the code in that notebook. 
+
+# ESP32 CSI Visualiser
+
+The ESP32 CSI Visualiser supports parsing, plotting and processing of raw CSI data from the ESP32 CSI Tool. The following image shows the UI elements of the tool.
+
+![UI](documentation\images\UI.png)
+
+## Import and Parse files
+
+To import CSV files containing raw CSI data, use the "Browse" button to search and import the file. 
+
+![UI](documentation\images\Import.png)
+
+## Process and Filter files
+
+After importing the file, use the following widget to process and filter the CSI data. 
+
+![UI](documentation\images\Process.png)
+
+There are 3 types of filters supported: (1) 2nd-order Butterworth low-pass filter, (2) Hampel filter, and (3) Discrete Wavelet Transform (DWT).
+
+For the Butterworth low-pass filter, one needs to set both the cutoff frequency, and sampling frequency.
+For Hampel filter and DWT, one needs to set the Window/ Wavelet(db) used.
+
+Three types of graphs are supported. The first is a normal plot, and one needs to choose the subcarrier to plot. The second is a heatmap that plots all subcarriers. The last plot supported is the principal component analysis (PCA).
+Filters are automatically applied to the raw data, before being plotted.
